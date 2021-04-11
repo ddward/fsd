@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="description" content="Download financial statement data via API.">
+
+    <title>API Keys | Financial Statement Data</title>
+
+    <!-- Scripts -->
+    <script type="text/javascript" async=""
+        src="https://www.gstatic.com/recaptcha/releases/2Mfykwl2mlvyQZQ3PEgoH710/recaptcha__en.js"
+        crossorigin="anonymous"
+        integrity="sha384-Cx10SI4nRyIf/4CfTL8bj2s8I5ccz18HDscUBxSzsbe1SPnhchceoHtCw2m0nc/h"></script>
+    <script async="" src="https://www.google-analytics.com/analytics.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <!-- TODO: Google Analytics-->
+
+    </script>
+
+    {% load static %}
+
+    <!-- Styles -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap_custom.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,500%7CLato:300,400" rel="stylesheet"
+        type="text/css">
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+    <link rel="icon" href="/static/img/favicon.ico">
+
+</head>
+
+<body data-spy="scroll" data-target=".sidebar" data-offset="200">
+
+
+    <!-- Sidebar -->
+    <aside class="sidebar sidebar-boxed hidden-xs">
+
+        <ul class="nav sidenav">
+            <li id="support-page-top"><a href="#">Financial Statement Data</a>
+            </li>
+            <li class="active"><a href="#api-key">Claim your API key</a>
+            </li>
+
+            <li class="">
+                <a href="#usage">Usage</a>
+
+            </li>
+
+        </ul>
+
+    </aside>
+    <!-- END Sidebar -->
+
+
+    <header class="site-header navbar-transparent">
+
+        <!-- Top navbar & branding -->
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+
+                <!-- Toggle buttons and brand -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="true" aria-controls="navbar">
+                        <span class="glyphicon glyphicon-option-vertical"></span>
+                    </button>
+
+                    <button type="button" class="navbar-toggle for-sidebar" data-toggle="offcanvas">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                </div>
+                <!-- END Toggle buttons and brand -->
+
+                <!-- Top navbar -->
+                <div id="navbar" class="navbar-collapse collapse" aria-expanded="true" role="banner">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#" target="_blank">Home</a></li>
+                        <li><a href="#" target="_blank">Usage</a></li>
+                    </ul>
+                </div>
+                <!-- END Top navbar -->
+
+            </div>
+        </nav>
+        <!-- END Top navbar & branding -->
+
+        <!-- Banner -->
+        <div class="banner auto-size color-primary">
+            <div class="container-fluid text-white">
+                <h1><strong>Financial Statement Data</strong></h1>
+            </div>
+        </div>
+        <!-- END Banner -->
+
+    </header>
+
+    <main class="container-fluid">
+
+        <!-- Main content -->
+        <article class="main-content" role="main">
+            <h2 id="api-key"><a href="#api-key">Claim your API Key</a></h2>
+
+            {% if token %}
+            <section>
+                <p>Your API key is:</p>
+                <p><b>{{ token }}</b></p>
+                <p>Store it somewhere safe for reuse. See the <a href="#usage">usage
+                    </a> section for reference.</p>
+            </section>
+
+
+            {% else %}
+            <section>
+                <p>Claim your free API key with lifetime access. We highly recommend that you use a legitimate email
+                    address - this is the primary way we will contact you for feature announcements and troubleshooting
+                    purposes (e.g. if you lose your API key). We <u>never</u> send promotional or marketing materials to
+                    our users. </p>
+                <br>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <!--<p class="form-label">Email:</p>
+                    <p class="form-field"><input id="email" name="email" type="text" required="">
+                    </p>-->
+                    <p class="form-label">Email:</p>
+                    <p class="form-field">
+                        {{ api_form.email }}
+                    </p>
+                    <div class="g-recaptcha" data-sitekey="6LesFGAaAAAAAN6W96PMd6T1Aki6SLCYIMp0m0n2"></div>
+                    <br>
+                    <input id="submit-btn" type="submit" value="Get Free API Key" class="btn color-primary btn-lg">
+                </form>
+
+            </section>
+
+            {% endif %}
+
+            <section>
+                <h2 id="usage"><a href="#usage">Usage</a></h2>
+                <br>
+                <h5><b>Frequently Asked Questions</b></h5>
+                <br>
+                <p><b>I have got my API key, now what? </b></p>
+                <p>Welcome to Alpha Vantage! Getting started is easy: </p>
+                <p>❚ If you would like to start building right away, the open-source community has developed over 500
+                    libraries and wrappers for Alpha Vantage - you may want to <a
+                        href="https://github.com/search?q=alpha+vantage" target="_blank">give them a try</a>.</p>
+                <p>❚ If you are a <b>spreadsheet user</b> (e.g., Excel or Google Sheets), please check out our dedicated
+                    <a href="https://www.alphavantage.co/spreadsheets/" target="_blank">spreadsheet add-ons</a>.
+                </p>
+                <br>
+
+            </section>
+
+        </article>
+        <!-- END Main content -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container-fluid">
+            <a id="scroll-up" href="#"><i class="fa fa-angle-up"></i></a>
+
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <p>This site is not operated by a financial advisor. Data is not guaranteed to be accurate. Invest
+                        at your own risk.</p>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <ul class="footer-menu">
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- END Footer -->
+
+</body>
+
+</html>

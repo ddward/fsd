@@ -1,0 +1,17 @@
+# log rules for this folder
+
+# compress files after they are rotated
+compress
+
+# apply rules to all log files in this folder
+/media/ddward/RAID10/parser_core/log_files/*.log {
+
+# rotate each week
+weekly
+
+# rotate once before deleting old files
+rotate 1
+
+su root syslog
+
+}
