@@ -1,0 +1,4 @@
+docker container stop fsd-container
+docker container rm fsd-container
+docker build -t fsd-container .
+docker run -it -p 49152:49152 --name fsd-container fsd-container

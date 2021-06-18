@@ -1,0 +1,276 @@
+{% extends "gui/base.html" %}
+
+{% block content %}
+<h1 id="summary">Democratizing Financial Research<a href="#"></a></h1>
+<section>
+    <p> As investment tools multiply, more people are choosing to manage their own stock portfolios. When
+        deciding whether to invest in a company, it helps to have an understanding of that company's financial situation
+        such as
+        their revenue, assets, and debts. This
+        information
+        is free for all public companies traded in the U.S. from the <a
+            href="https://www.sec.gov/edgar/searchedgar/companysearch.html">Securities and Exchange Commission</a>.
+    </p>
+    <p>
+        However, it is
+        difficult to find <i>well formatted and easily comparable</i> data from
+        financial statements that is not cost-prohibitive. FinancialStatementData.com was created after one frustrated
+        investor built a financial
+        statement data aggregator of their own. You can access a company's historic assets, liabilities, cash on hand,
+        stockholders' equity and more with your free <a href="#api-key">API Key</a>.</p>
+    <p>Get started with the API using the <a href="#code">code examples</a>.
+        Read more about the data fields available through the API in the <a href="#data">response data</a> section.
+        For a table of companies included in the API, see <a href="/companies"> supported companies</a>.
+    </p>
+</section>
+
+<hr class="hr-dash my-7">
+
+<h2 id="api-key">Claim your API Key<a href="#api-key"></a></h2>
+
+{% if token %}
+<section>
+    <p>Your API key is:</p>
+    <p><b>{{ token }}</b></p>
+    <p>Store it somewhere safe for reuse. See <a href="#example">code examples
+        </a> section for usage.</p>
+</section>
+
+
+{% else %}
+<section>
+    <p>Claim your API key with your email address. Information about feature updates will be sent to this address.</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <p class="form-label">Email:</p>
+        <p class="form-field">
+            <input type="email" name="email" maxlength="128" required="" id="id_email">
+        </p>
+        <div class="g-recaptcha" data-sitekey="6LesFGAaAAAAAN6W96PMd6T1Aki6SLCYIMp0m0n2"></div>
+        {% if captcha_warn %}
+        <p class="text-danger">Please verify that you are human.</p>
+        {% endif %}
+        <br>
+        <input id="submit-btn" type="submit" value="Get Free API Key" class="btn color-primary btn-lg">
+    </form>
+
+</section>
+
+{% endif %}
+
+<hr class="hr-dash my-7">
+
+
+
+<h2 id="doc">Documentation<a href="#doc"></a></h2>
+
+<h3 id="endpoints">API Endpoints<a class="anchor" href="#endpoints"></a></h3>
+<p>API calls take the format
+    <code>https://www.financialstatementdata.com/{RANGE}/{TICKER}</code>
+</p>
+<li><code>RANGE</code> currently only supports one option, <code>FY</code>, which
+    returns
+    fields from
+    company's 10-K forms.</li>
+<li><code>TICKER</code> is a company's stock ticker. A full list of supported
+    tickers can be
+    found <a href="/companies">here.</a></li>
+<p></p>
+
+<p>Your API key should be included in the request header in the format
+    <code>Authrozation: Token {YOUR_API_KEY}</code>
+</p>
+
+<hr class="hr-dash my-7">
+
+<h3 id="example">Code Examples</h3>
+<p><mark class="small">- bash</mark></p>
+<p>Get a single company's data from a terminal</p>
+<p><code><pre>curl -H 'Authorization: Token {YOUR_API_KEY}' https://financialstatementdata.com/FY/AAPL</pre></code>
+</p>
+
+<p><mark class="small">- python</mark></p>
+<p>Get data from multiple companies, combine into a .csv file</p>
+<pre><code>import requests
+import pandas as pd
+
+# Your API key
+API_KEY = "{YOUR_API_KEY}"
+
+# Only fiscal year is supported currently
+range = "FY"
+
+# Tickers for the companies you are interested in
+# See supported companies page
+companies = ["MSFT", "AAPL", "GOOG"]
+
+# Collect data for each company, combine into a .csv file
+rows = []
+for company in companies:
+    url = f"https://financialstatementdata.com/{range}/{company}"
+    headers = {"Authorization": "Token " + API_KEY}
+    r = requests.get(url, headers=headers)
+    rows = rows + r.json()
+
+combined = pd.DataFrame(rows)
+combined.to_csv("financial_data.csv")</code></pre>
+
+
+
+<hr class="hr-dash my-7">
+
+
+<h3 id="data">Response Data<a class="anchor" href="#update"></a>
+</h3>
+<p>Each request returns a JSON object with the following fields:
+
+</p>
+</li>
+<li><code>source</code> - a link to the source report as submitted to the SEC
+</li>
+<li><code>ticker</code> - the NYSE stock ticker for a company</li>
+<li><code>name</code> - the name of a company</li>
+<li><code>year_ending</code> - the last day of the record year</li>
+<li><code>EarningsPerShareDiluted</code> - The earnings attributable to each security on
+    the basis that all of the earnings for the period had been distributed (to the
+    extent that each security may share in earnings). This is the earnings amount which
+    reflects the participation rights in undistributed earnings of each security, after
+    giving effect to all dilutive potential common shares outstanding during the period.
+</li>
+<li><code>EarningsPerShareBasic</code> - The amount of net income (loss) for the period
+    per each share of common stock or unit outstanding during the reporting period.</li>
+<li><code>EarningsPerShareBasicAndDiluted</code> - The amount of net income or loss for
+    the period per each share in instances when basic and diluted earnings per share are
+    the same amount and reported as a single line item on the face of the financial
+    statements. Basic earnings per share is the amount of net income or loss for the
+    period per each share of common stock or unit outstanding during the reporting
+    period. Diluted earnings per share includes the amount of net income or loss for the
+    period available to each share of common stock or common unit outstanding during the
+    reporting period and to each share or unit that would have been outstanding assuming
+    the issuance of common shares or units for all dilutive potential common shares or
+    units outstanding during the reporting period.
+</li>
+<li><code>CashAndCashEquivalentsAtCarryingValue</code> - Amount of currency on hand as
+    well as demand deposits with banks or financial institutions. Includes other kinds
+    of accounts that have the general characteristics of demand deposits. Also includes
+    short-term, highly liquid investments that are both readily convertible to known
+    amounts of cash and so near their maturity that they present insignificant risk of
+    changes in value because of changes in interest rates. Excludes cash and cash
+    equivalents within disposal group and discontinued operation.
+
+</li>
+<li><code>Cash</code> - Amount of currency on hand as well as demand deposits with banks
+    or financial institutions. Includes other kinds of accounts that have the general
+    characteristics of demand deposits. Excludes cash and cash equivalents within
+    disposal group and discontinued operation.
+</li>
+<li><code>CashAndDueFromBanks</code> - For banks and other depository institutions:
+    Includes cash on hand (currency and coin), cash items in process of collection,
+    noninterest bearing deposits due from other financial institutions (including
+    corporate credit unions), and noninterest bearing balances with the Federal Reserve
+    Banks, Federal Home Loan Banks and central banks.
+</li>
+<li><code>NetIncomeLoss</code> - The portion of profit or loss for the period, net of
+    income taxes, which is attributable to the parent.
+</li>
+<li><code>ProfitLoss</code> - The consolidated profit or loss for the period, net of
+    income taxes, including the portion attributable to the noncontrolling interest.
+</li>
+<li><code>OperatingIncomeLoss</code> - The net result for the period of deducting
+    operating expenses from operating revenues.
+</li>
+<li><code>AssetsCurrent</code> - Sum of the carrying amounts as of the balance sheet
+    date of all assets that are expected to be realized in cash, sold, or consumed
+    within one year (or the normal operating cycle, if longer). Assets are probable
+    future economic benefits obtained or controlled by an entity as a result of past
+    transactions or events.
+</li>
+<li><code>Assets</code> - Sum of the carrying amounts as of the balance sheet date of
+    all assets that are recognized. Assets are probable future economic benefits
+    obtained or controlled by an entity as a result of past transactions or events.
+</li>
+<li><code>Liabilities</code> - Sum of the carrying amounts as of the balance sheet date
+    of all liabilities that are recognized. Liabilities are probable future sacrifices
+    of economic benefits arising from present obligations of an entity to transfer
+    assets or provide services to other entities in the future.
+</li>
+<li><code>StockholdersEquity</code> - Total of all stockholders' equity (deficit) items,
+    net of receivables from officers, directors, owners, and affiliates of the entity
+    which are attributable to the parent. The amount of the economic entity's
+    stockholders' equity attributable to the parent excludes the amount of stockholders'
+    equity which is allocable to that ownership interest in subsidiary equity which is
+    not attributable to the parent (noncontrolling interest, minority interest). This
+    excludes temporary equity and is sometimes called permanent equity.
+</li>
+<li><code>StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest</code>
+    - Impact on total stockholders' equity of cumulative effect of change in reporting
+    entity. A change in reporting entity is considered as follows: (1) presenting
+    consolidated statements in place of the financial statements of individual reporting
+    entities; (2) changing the combination of subsidiaries that make up the group for
+    which the consolidated financial statements are presented; and (3) changing the
+    entities included in the combined financial statements. A business combination
+    accounted for under the purchase method and the consolidation of a variable interest
+    entity are not considered a change in reporting entity.
+</li>
+<li><code>LiabilitiesAndStockholdersEquity</code> - Amount of liabilities and equity
+    items, including the portion of equity attributable to noncontrolling interests, if
+    any.
+</li>
+<li><code>AccountsPayableCurrent</code> - Carrying value as of the balance sheet date of
+    liabilities incurred (and for which invoices have typically been received) and
+    payable to vendors for goods and services received that are used in an entity's
+    business. Used to reflect the current portion of the liabilities (due within one
+    year or within the normal operating cycle if longer).
+</li>
+<li><code>AccountsReceivableNetCurrent</code> - Amount, after allowance for credit loss,
+    of right to consideration from customer for product sold and service rendered in
+    normal course of business, classified as current.
+</li>
+<li><code>InventoryNet</code> - Amount after valuation and LIFO reserves of inventory
+    expected to be sold, or consumed within one year or operating cycle, if longer.
+</li>
+<li><code>ResearchAndDevelopmentExpense</code> - The aggregate costs incurred (1) in a
+    planned search or critical investigation aimed at discovery of new knowledge with
+    the hope that such knowledge will be useful in developing a new product or service,
+    a new process or technique, or in bringing about a significant improvement to an
+    existing product or process; or (2) to translate research findings or other
+    knowledge into a plan or design for a new product or process or for a significant
+    improvement to an existing product or process whether intended for sale or the
+    entity's use, during the reporting period charged to research and development
+    projects, including the costs of developing computer software up to the point in
+    time of achieving technological feasibility, and costs allocated in accounting for a
+    business combination to in-process projects deemed to have no alternative future
+    use.
+</li>
+
+</ul>
+
+
+<hr class="hr-dash my-7">
+
+
+<h3 id="notes">Notes<a class="anchor" href="#plugin"></a>
+</h3>
+<p>
+    The API is updated nightly at ~3:00 EST.
+</p>
+<p>This API is designed to be most useful to investors performing basic fundamental
+    analysis. The API provides 19 accounting fields commonly used in this type of
+    analysis. If you want to view additional fields, each API response record includes a
+    link to the complete source report where all fields can be found.
+</p>
+<p>
+    The API is designed to return data exactly as submitted to the SEC. If there was a
+    data entry error or field miss-classification in the original submission that error
+    will carry through to the API. That said, if you find a data-point that does not
+    align with the the linked SEC report, please contact
+    financialstatementdata@protonmail.com with the record in question.
+</p>
+<p>
+    This service is not operated by a financial advisor. Data presented here is not
+    guaranteed in any way for either accuracy or completeness. Always do your own
+    independent research when investing.
+</p>
+
+{% endblock content %}
