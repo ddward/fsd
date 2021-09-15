@@ -31,7 +31,9 @@ except FileNotFoundError:
     sys.exit(1)
 
 
-ALLOWED_HOSTS = [".financialstatementdata.com", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = [
+    ".financialstatementdata.com", "127.0.0.1", "localhost", "nginx"
+]
 
 CSRF_COOKIE_SECURE = True
 
@@ -147,6 +149,8 @@ REST_FRAMEWORK = {
 STATIC_URL = "/static/"
 
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+STATIC_ROOT = "/var/www/fsd_api/static/"
 
 TIME_ZONE = "UTC"
 

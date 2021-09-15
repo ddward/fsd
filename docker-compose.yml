@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+  nginx:
+    build: 
+      context: ./nginx-proxy
+      dockerfile: Dockerfile
+    ports:
+      - "5051:80"
+
+  
