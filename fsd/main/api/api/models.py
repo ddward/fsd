@@ -27,9 +27,8 @@ class AnnualFullFormatted(models.Model):
     assets = models.FloatField(blank=True, null=True)
     liabilities = models.FloatField(blank=True, null=True)
     stockholdersequity = models.FloatField(blank=True, null=True)
-    stockholdersequityincludingportionattributabletononcontrollinginterest = (
-        models.TextField(blank=True, null=True)
-    )
+    stockholdersequityincludingnoncontrollinginterest = (models.TextField(
+        blank=True, null=True))
     liabilitiesandstockholdersequity = models.FloatField(blank=True, null=True)
     accountspayablecurrent = models.FloatField(blank=True, null=True)
     accountsreceivablenetcurrent = models.FloatField(blank=True, null=True)

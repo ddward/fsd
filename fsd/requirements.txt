@@ -33,4 +33,4 @@ urllib3==1.26.4
 uWSGI==2.0.19.1
 wcwidth==0.2.5
 yarg==0.1.9
-
+psycopg2-binary>=2.8

@@ -6,7 +6,8 @@ from api.models import AnnualFullFormatted
 class AnnualFullFormattedSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnnualFullFormatted
-        fields = ["source",
+        fields = [
+            "source",
             "ticker",
             "name",
             "year_ending",
@@ -23,7 +24,7 @@ class AnnualFullFormattedSerializer(serializers.ModelSerializer):
             "assets",
             "liabilities",
             "stockholdersequity",
-            "stockholdersequityincludingportionattributabletononcontrollinginterest",
+            "stockholdersequityincludingnoncontrollinginterest",
             "liabilitiesandstockholdersequity",
             "accountspayablecurrent",
             "accountsreceivablenetcurrent",

@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import json
 import sys
+import os
+
+APPLICATION_UNDER_TEST = os.environ.get('APPLICATION_UNDER_TEST') == "True"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,18 +30,18 @@ try:
         SECRET_KEY = keys["SETTINGS_SECRET_KEY"]
         RECAPTCHA_PRIVATE_KEY = keys["RECAPTCHA_PRIVATE_KEY"]
 except FileNotFoundError:
-    print("secrets.json not found, make sure the file exists in base directory")
+    print(
+        "secrets.json not found, make sure the file exists in base directory")
     sys.exit(1)
-
 
 ALLOWED_HOSTS = [
     ".financialstatementdata.com", "127.0.0.1", "localhost", "nginx"
 ]
 
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True if not APPLICATION_UNDER_TEST else False
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False if not APPLICATION_UNDER_TEST else True
 
 # Application definition
 
@@ -66,6 +69,10 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# Remove cross site scripting prevention for testing only
+if APPLICATION_UNDER_TEST:
+    MIDDLEWARE.remove("django.middleware.csrf.CsrfViewMiddleware")
+
 ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
@@ -86,33 +93,52 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'auth_db',
+        'PORT': 5432,
+    },
+    "fin_db": {
+        "ENGINE": "django.db.backends.postgresql",
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'fin_db',
+        'PORT': 5432,
     }
 }
 
+# Database Routers
+# https://docs.djangoproject.com/en/3.2/topics/db/multi-db/
+
+DATABASE_ROUTERS = ["config.dbrouters.FinDataRouter"]
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME":
+        "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME":
+        "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME":
+        "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME":
+        "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -121,10 +147,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
 
 # API Authentication
 # Set defualt permission to authenticated only

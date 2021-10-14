@@ -1,14 +1,45 @@
 version: "3.9"
 services:
+  auth_db:
+    image: postgres
+    volumes:
+      - .db/auth_db/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+  fin_db:
+    image: postgres
+    volumes:
+      - ./db/fin_db/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5433:5432"
   app:
     build:
-      context: .
+      context: ./fsd
       dockerfile: Dockerfile
+    environment:
+        - APPLICATION_UNDER_TEST=True
+    depends_on:
+      - "auth_db"
+      - "fin_db"
   nginx:
     build: 
       context: ./nginx-proxy
       dockerfile: Dockerfile
+    depends_on:
+      - "app"
+    ports:
+      - "5051:80"
   test:
     build:
       context: ./tests
       dockerfile: Dockerfile
+    depends_on: 
+      - "nginx"

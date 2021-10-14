@@ -1,9 +1,28 @@
 version: "3.9"
 services:
+  auth_db:
+    image: postgres
+    volumes:
+      - .db/auth_db/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  fin_db:
+    image: postgres
+    volumes:
+      - ./db/fin_db/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
   app:
     build:
-      context: .
+      context: ./fsd
       dockerfile: Dockerfile
+    depends_on:
+      - "auth_db"
+      - "fin_db"
   nginx:
     build: 
       context: ./nginx-proxy
