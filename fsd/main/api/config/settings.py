@@ -99,26 +99,13 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'auth_db',
-        'PORT': 5432,
-    },
-    "fin_db": {
-        "ENGINE": "django.db.backends.postgresql",
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'fin_db',
+        'NAME': os.environ.get("POSTGRES_DB"),
+        'USER': os.environ.get("POSTGRES_USER"),
+        'PASSWORD': os.environ.get("POSTGRES_PASSWORD"),
+        'HOST': 'db',
         'PORT': 5432,
     }
 }
-
-# Database Routers
-# https://docs.djangoproject.com/en/3.2/topics/db/multi-db/
-
-DATABASE_ROUTERS = ["config.dbrouters.FinDataRouter"]
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -162,8 +149,6 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
-    # remove for testing... TODO restart
-    # "DEFAULT_THROTTLE_RATES": {"user": "1/sec"},
 }
 
 # SECURE_SSL_REDIRECT = True
