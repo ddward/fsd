@@ -1,4 +1,0 @@
-stdbuf -oL python annual_daily_update_complete.py &>> log_files/annual_daily_append.log &
-
-stdbuf -oL python google_dns_update.py &>> log_files/google_dns_update.log &
-
