@@ -15,7 +15,7 @@ The API is built in the [Django](https://www.djangoproject.com/) and [Django RES
 
 Take a look at the files in the fsd/api/api sub-folder for API backend logic. Currently the API serves one endpoint based on a company's stock ticker. Future releases will have more endpoints.
 
-fsd/api/gui handles front-end logic, fsd/api/templates has html, and fsd/api/static houses css and javascript files
+fsd/api/gui handles front-end logic, fsd/api/templates has html, and fsd/api/static houses css and javascript files.
 
 fsd/api/common and fsd/api/config tie the app together and cover several security features.
 
