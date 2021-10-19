@@ -1,6 +1,6 @@
 ## Hello Analytiks! :octocat:
 
-This is the code repo for my financial data API. The API is live at [financialstatementdata.com](financialstatementdata.com), feel free to play around there and try out the code examples.
+This is the code repo for my financial data API. The API is live at [financialstatementdata.com](https://www.financialstatementdata.com), feel free to play around there and try out the code examples.
 
 The API is split out into four microservices, each in it's own Docker container:
 1. API
